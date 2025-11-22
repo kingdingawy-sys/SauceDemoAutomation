@@ -1,0 +1,19 @@
+✅ Added product: Sauce Labs Backpack
+✅ Added product: Sauce Labs Bolt T-Shirt
+✅ Added product: Sauce Labs Onesie
+✅ Cart badge shows: 3 items
+✅ Cart contains 3 items
+✅ Product 'Sauce Labs Backpack' found in cart
+✅ Product 'Sauce Labs Bolt T-Shirt' found in cart
+✅ Product 'Sauce Labs Onesie' found in cart
+   Price: $29.99
+   Price: $15.99
+   Price: $7.99
+✅ Expected subtotal: $53.97
+✅ Reached checkout-step-two
+✅ Overview shows 3 items
+✅ All prices match between cart and overview
+✅ Subtotal verified: $53.97
+✅ Tax: $4.32
+✅ Total verified: $58.29 ($53.97 + $4.32)
+🎉 ✅ Multiple products checkout completed successfully!

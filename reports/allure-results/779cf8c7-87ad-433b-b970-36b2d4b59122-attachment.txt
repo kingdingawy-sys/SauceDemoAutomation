@@ -1,0 +1,1 @@
+✅ Rapid clicks handled correctly (no double-submit)

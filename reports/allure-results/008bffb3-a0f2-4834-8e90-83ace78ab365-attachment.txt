@@ -1,0 +1,2 @@
+⚠️ Site accepts special characters in names
+✅ Checkout completed with special characters

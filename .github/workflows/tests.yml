@@ -9,10 +9,11 @@ on:
 
 jobs:
   test:
-    name: Run Tests
+    name: Run Tests on ${{ matrix.browser }}
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
         browser: [chrome, firefox]
 
@@ -42,17 +43,21 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
+    - name: Create directories
+      run: |
+        mkdir -p screenshots
+        mkdir -p allure-results
+
     - name: Run tests with ${{ matrix.browser }}
       run: |
         pytest tests/ \
           --browser=${{ matrix.browser }} \
           --alluredir=allure-results \
-          -v -s \
+          -v \
           --tb=short
       continue-on-error: false
 
-    # 🔥 v4 بدل v3
-    - name: Upload screenshots
+    - name: Upload screenshots on failure
       if: failure()
       uses: actions/upload-artifact@v4
       with:
@@ -60,7 +65,6 @@ jobs:
         path: screenshots/
         retention-days: 7
 
-    # 🔥 v4 بدل v3
     - name: Upload Allure results
       if: always()
       uses: actions/upload-artifact@v4
