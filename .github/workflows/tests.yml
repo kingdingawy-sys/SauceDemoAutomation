@@ -1,55 +1,47 @@
 name: Automated Tests
 
-# متى يشتغل؟
 on:
   push:
-    branches: [ main, master ]  # لما تعمل push على main
+    branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]  # لما تعمل pull request
-  workflow_dispatch:  # أو لما تشغله manual من GitHub
+    branches: [ main, master ]
+  workflow_dispatch:
 
-# الشغل اللي هيتعمل
 jobs:
   test:
     name: Run Tests
-    runs-on: ubuntu-latest  # يشتغل على Linux server
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        browser: [chrome, firefox]  # يشغل التيستات على الـ 2 browsers
+        browser: [chrome, firefox]
 
     steps:
-    # Step 1: جيب الكود من GitHub
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Step 2: نزّل Python
     - name: Set up Python 3.11
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: '3.11'
 
-    # Step 3: Install Chrome
     - name: Install Chrome
       if: matrix.browser == 'chrome'
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
 
-    # Step 4: Install Firefox
     - name: Install Firefox
       if: matrix.browser == 'firefox'
       run: |
         sudo apt-get update
         sudo apt-get install -y firefox
 
-    # Step 5: Install dependencies
     - name: Install Python dependencies
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    # Step 6: Run tests
     - name: Run tests with ${{ matrix.browser }}
       run: |
         pytest tests/ \
@@ -59,38 +51,20 @@ jobs:
           --tb=short
       continue-on-error: false
 
-    # Step 7: Upload screenshots on failure
+    # 🔥 v4 بدل v3
     - name: Upload screenshots
       if: failure()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: screenshots-${{ matrix.browser }}
+        name: screenshots-${{ matrix.browser }}-${{ github.run_number }}
         path: screenshots/
         retention-days: 7
 
-    # Step 8: Upload Allure results
+    # 🔥 v4 بدل v3
     - name: Upload Allure results
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
-        name: allure-results-${{ matrix.browser }}
+        name: allure-results-${{ matrix.browser }}-${{ github.run_number }}
         path: allure-results/
         retention-days: 7
-
-    # Step 9: Generate Allure report
-    - name: Generate Allure Report
-      if: always()
-      uses: simple-elf/allure-report-action@master
-      with:
-        allure_results: allure-results
-        allure_history: allure-history
-        keep_reports: 20
-
-    # Step 10: Publish report to GitHub Pages
-    - name: Deploy Allure report to GitHub Pages
-      if: always() && matrix.browser == 'chrome'
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: allure-history
-        publish_branch: gh-pages
