@@ -4,67 +4,68 @@ import os
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
+from selenium.webdriver.firefox.service import Service as FirefoxService
 
 
 def pytest_addoption(parser):
-    """
-    إضافة option للـ browser من الـ command line
-    """
+    """إضافة browser option"""
     parser.addoption(
         "--browser",
         action="store",
         default="chrome",
-        help="Browser to run tests: chrome or firefox"
+        help="Browser: chrome or firefox"
     )
 
 
 @pytest.fixture
 def driver(request):
     """
-    Driver fixture يشتغل محلياً وفي CI/CD
+    Driver fixture - يشتغل محلياً وفي CI/CD
     """
-    # جيب الـ browser من الـ parametrize أو من الـ command line
+    # Get browser from parametrize OR command line
     if hasattr(request, "param"):
         browser = request.param
     else:
         browser = request.config.getoption("--browser")
 
-    # تحديد إذا كنا في CI/CD environment
+    # Check if running in CI
     is_ci = os.getenv("CI") or os.getenv("GITHUB_ACTIONS")
 
-    if browser == "firefox":
+    print(f"\n🚀 Starting {browser.upper()} browser (CI: {bool(is_ci)})")
+
+    if browser.lower() == "firefox":
         options = FirefoxOptions()
         options.set_preference("dom.disable_beforeunload", True)
         options.set_preference("dom.disable_open_during_load", False)
 
-        # في CI/CD شغّل headless
         if is_ci:
             options.add_argument("--headless")
 
         driver = webdriver.Firefox(options=options)
 
-    else:  # default = chrome
-        chrome_options = ChromeOptions()
-        chrome_options.add_argument("--disable-popup-blocking")
-        chrome_options.add_argument("--disable-notifications")
-        chrome_options.add_argument("--disable-infobars")
-        chrome_options.add_argument("--disable-extensions")
+    else:  # chrome (default)
+        options = ChromeOptions()
+        options.add_argument("--disable-popup-blocking")
+        options.add_argument("--disable-notifications")
+        options.add_argument("--disable-infobars")
+        options.add_argument("--disable-extensions")
 
-        # في CI/CD، ضيف arguments إضافية
         if is_ci:
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("--window-size=1920,1080")
+            options.add_argument("--headless=new")
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+
+        options.add_argument("--window-size=1920,1080")
 
         prefs = {
             "credentials_enable_service": False,
             "profile.password_manager_enabled": False
         }
-        chrome_options.add_experimental_option("prefs", prefs)
+        options.add_experimental_option("prefs", prefs)
 
-        driver = webdriver.Chrome(options=chrome_options)
+        driver = webdriver.Chrome(options=options)
 
     driver.get("https://www.saucedemo.com/")
     driver.maximize_window()
@@ -76,28 +77,22 @@ def driver(request):
 
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
-    """
-    Screenshot on failure
-    """
+    """Screenshot on failure"""
     outcome = yield
     rep = outcome.get_result()
 
     if rep.when == "call" and rep.failed:
         driver = item.funcargs.get('driver')
         if driver:
-            # إنشاء folder للـ screenshots
             os.makedirs("screenshots", exist_ok=True)
-
-            # حفظ screenshot
             screenshot_path = f"screenshots/{item.name}.png"
             driver.save_screenshot(screenshot_path)
 
-            # إرفاق بالـ Allure
             try:
                 allure.attach(
                     driver.get_screenshot_as_png(),
                     name=item.name,
                     attachment_type=allure.attachment_type.PNG
                 )
-            except Exception:
-                pass  # في حالة فشل الـ attach، استمر
+            except:
+                pass

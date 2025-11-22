@@ -1,0 +1,3 @@
+
+🚀 Starting FIREFOX browser (CI: False)
+⚠️ Site accepts whitespace-only input

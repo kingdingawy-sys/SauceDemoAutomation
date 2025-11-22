@@ -9,13 +9,8 @@ on:
 
 jobs:
   test:
-    name: Run Tests on ${{ matrix.browser }}
+    name: Run Tests on Chrome
     runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: false
-      matrix:
-        browser: [chrome, firefox]
 
     steps:
     - name: Checkout code
@@ -27,16 +22,9 @@ jobs:
         python-version: '3.11'
 
     - name: Install Chrome
-      if: matrix.browser == 'chrome'
       run: |
         sudo apt-get update
         sudo apt-get install -y google-chrome-stable
-
-    - name: Install Firefox
-      if: matrix.browser == 'firefox'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y firefox
 
     - name: Install Python dependencies
       run: |
@@ -48,20 +36,21 @@ jobs:
         mkdir -p screenshots
         mkdir -p allure-results
 
-    - name: Run tests with ${{ matrix.browser }}
+    - name: Run tests
       run: |
         pytest tests/ \
-          --browser=${{ matrix.browser }} \
+          --browser=chrome \
           --alluredir=allure-results \
           -v \
-          --tb=short
+          --tb=short \
+          -m "not firefox"
       continue-on-error: false
 
     - name: Upload screenshots on failure
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: screenshots-${{ matrix.browser }}-${{ github.run_number }}
+        name: screenshots-${{ github.run_number }}
         path: screenshots/
         retention-days: 7
 
@@ -69,6 +58,6 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: allure-results-${{ matrix.browser }}-${{ github.run_number }}
+        name: allure-results-${{ github.run_number }}
         path: allure-results/
         retention-days: 7

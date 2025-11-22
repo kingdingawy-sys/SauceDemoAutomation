@@ -1,1 +1,0 @@
-No alert appeared in Firefox (as expected).

@@ -1,1 +1,0 @@
-✅ Test passed: Cancel from step-two returns to inventory

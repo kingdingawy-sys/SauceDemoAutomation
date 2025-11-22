@@ -1,2 +1,0 @@
-⚠️ Site accepts very long names (150 chars)
-✅ Checkout completed with very long names

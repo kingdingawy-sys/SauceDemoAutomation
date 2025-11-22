@@ -1,1 +1,0 @@
-✅ Checkout handles leading/trailing spaces correctly

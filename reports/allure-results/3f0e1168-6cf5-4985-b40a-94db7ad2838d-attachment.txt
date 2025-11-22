@@ -1,1 +1,0 @@
-✅ Test passed: Cancel returns to cart

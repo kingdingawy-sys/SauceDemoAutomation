@@ -1,14 +1,10 @@
-# Core dependencies
 selenium==4.27.1
 pytest==8.3.4
 allure-pytest==2.13.5
-
-# Required by pytest and other packages
 typing-extensions==4.12.2
-attrs>=23.1.0
-pluggy>=1.5.0
-iniconfig>=2.0.0
-packaging>=23.0
-
-# For better test output
-pytest-html>=4.1.1
+attrs==25.4.0
+pluggy==1.6.0
+iniconfig==2.3.0
+packaging==25.0
+pytest-html==4.1.1
+webdriver-manager==4.0.2
