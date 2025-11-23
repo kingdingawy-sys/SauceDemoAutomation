@@ -1,0 +1,3 @@
+
+🚀 Starting FIREFOX browser (CI: False)
+✅ Test passed: Cancel from step-two returns to inventory

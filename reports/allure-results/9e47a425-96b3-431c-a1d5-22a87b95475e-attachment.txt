@@ -1,3 +1,0 @@
-
-🚀 Starting FIREFOX browser (CI: False)
-✅ Checkout handles leading/trailing spaces correctly

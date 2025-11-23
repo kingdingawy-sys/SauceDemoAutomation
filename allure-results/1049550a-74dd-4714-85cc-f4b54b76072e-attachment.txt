@@ -1,0 +1,3 @@
+
+🚀 Starting FIREFOX browser (CI: False)
+✅ Test passed: Checkout blocked with all empty fields

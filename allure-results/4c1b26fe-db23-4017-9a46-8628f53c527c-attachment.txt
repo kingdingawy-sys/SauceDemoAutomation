@@ -1,0 +1,3 @@
+
+🚀 Starting FIREFOX browser (CI: False)
+✅ Test passed: Error message dismissed successfully

@@ -4,86 +4,88 @@ from pages.products_page import ProductsPage
 from pages.cart_page import CartPage
 from selenium.webdriver.common.by import By
 
-def test_cart_loads(driver):
-    login = LoginPage(driver)
-    login.login("standard_user", "secret_sauce")
 
-    products = ProductsPage(driver)
-    products.add_product_to_cart(0)
-    products.go_to_cart()
+# 🔥 كل الـ tests في الملف ده هتشتغل على Firefox
+@pytest.mark.parametrize("driver", ["firefox"], indirect=True)
+class TestCart:
+    """Cart tests - Run on Firefox only"""
 
-    cart = CartPage(driver)
-    cart.wait_for_cart_to_load()
+    def test_cart_loads(self, driver):
+        login = LoginPage(driver)
+        login.login("standard_user", "secret_sauce")
 
-    # الصفحة فتحت وظهر عنصر واحد
-    assert cart.get_items_count() == 1
+        products = ProductsPage(driver)
+        products.add_product_to_cart(0)
+        products.go_to_cart()
 
+        cart = CartPage(driver)
+        cart.wait_for_cart_to_load()
 
-def test_remove_item_from_cart(driver):
-    login = LoginPage(driver)
-    login.login("standard_user", "secret_sauce")
+        # الصفحة فتحت وظهر عنصر واحد
+        assert cart.get_items_count() == 1
 
-    products = ProductsPage(driver)
-    products.add_product_to_cart(0)
-    products.go_to_cart()
+    def test_remove_item_from_cart(self, driver):
+        login = LoginPage(driver)
+        login.login("standard_user", "secret_sauce")
 
-    cart = CartPage(driver)
-    cart.wait_for_cart_to_load()
+        products = ProductsPage(driver)
+        products.add_product_to_cart(0)
+        products.go_to_cart()
 
-    # إزالة أول عنصر
-    cart.remove_first_item()
+        cart = CartPage(driver)
+        cart.wait_for_cart_to_load()
 
-    assert cart.get_items_count() == 0
+        # إزالة أول عنصر
+        cart.remove_first_item()
 
+        assert cart.get_items_count() == 0
 
-def test_continue_shopping(driver):
-    login = LoginPage(driver)
-    login.login("standard_user", "secret_sauce")
+    def test_continue_shopping(self, driver):
+        login = LoginPage(driver)
+        login.login("standard_user", "secret_sauce")
 
-    products = ProductsPage(driver)
-    products.add_product_to_cart(0)
-    products.go_to_cart()
+        products = ProductsPage(driver)
+        products.add_product_to_cart(0)
+        products.go_to_cart()
 
-    cart = CartPage(driver)
-    cart.wait_for_cart_to_load()
+        cart = CartPage(driver)
+        cart.wait_for_cart_to_load()
 
-    cart.click_continue_shopping()
+        cart.click_continue_shopping()
 
-    assert "inventory.html" in driver.current_url
+        assert "inventory.html" in driver.current_url
 
+    def test_checkout_button(self, driver):
+        login = LoginPage(driver)
+        login.login("standard_user", "secret_sauce")
 
-def test_checkout_button(driver):
-    login = LoginPage(driver)
-    login.login("standard_user", "secret_sauce")
+        products = ProductsPage(driver)
+        products.add_product_to_cart(0)
+        products.go_to_cart()
 
-    products = ProductsPage(driver)
-    products.add_product_to_cart(0)
-    products.go_to_cart()
+        cart = CartPage(driver)
+        cart.wait_for_cart_to_load()
 
-    cart = CartPage(driver)
-    cart.wait_for_cart_to_load()
+        cart.click_checkout()
 
-    cart.click_checkout()
+        assert "checkout-step-one.html" in driver.current_url
 
-    assert "checkout-step-one.html" in driver.current_url
+    def test_cart_item_name_matches_products(self, driver):
+        login = LoginPage(driver)
+        login.login("standard_user", "secret_sauce")
 
+        products = ProductsPage(driver)
 
-def test_cart_item_name_matches_products(driver):
-    login = LoginPage(driver)
-    login.login("standard_user", "secret_sauce")
+        # اسم أول منتج في صفحة المنتجات
+        product_name = products.get_product_name(0)
 
-    products = ProductsPage(driver)
+        products.add_product_to_cart(0)
+        products.go_to_cart()
 
-    # اسم أول منتج في صفحة المنتجات
-    product_name = products.get_product_name(0)
+        cart = CartPage(driver)
+        cart.wait_for_cart_to_load()
 
-    products.add_product_to_cart(0)
-    products.go_to_cart()
+        # اسم المنتج في الكارت
+        cart_name = cart.get_first_item_name()
 
-    cart = CartPage(driver)
-    cart.wait_for_cart_to_load()
-
-    # اسم المنتج في الكارت
-    cart_name = cart.get_first_item_name()
-
-    assert product_name == cart_name
+        assert product_name == cart_name

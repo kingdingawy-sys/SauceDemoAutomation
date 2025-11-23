@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    name: Run Selenium Tests (Chrome)
+    name: Run Selenium Tests (Chromium)
     runs-on: ubuntu-latest
 
     steps:
@@ -22,19 +22,12 @@ jobs:
       with:
         python-version: "3.11"
 
-    - name: Install Chrome + ChromeDriver
+    - name: Install Chromium + Driver
       run: |
         sudo apt-get update
-        sudo apt-get install -y wget unzip xvfb
-        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
-        sudo dpkg -i google-chrome-stable_current_amd64.deb || sudo apt --fix-broken install -y
-        
-        CHROME_VERSION=$(google-chrome --version | cut -d " " -f 3 | cut -d "." -f 1)
-        DRIVER_VERSION=$(wget -qO- https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION})
-        wget https://chromedriver.storage.googleapis.com/${DRIVER_VERSION}/chromedriver_linux64.zip
-        unzip chromedriver_linux64.zip
-        sudo mv chromedriver /usr/local/bin/
-        sudo chmod +x /usr/local/bin/chromedriver
+        sudo apt-get install -y chromium-browser chromium-chromedriver
+        which chromium-browser
+        which chromedriver
 
     - name: Install Python dependencies
       run: |
@@ -46,12 +39,12 @@ jobs:
         mkdir -p screenshots
         mkdir -p allure-results
 
-    - name: Run Tests (Headless Chrome)
+    - name: Run Tests (Headless Chromium)
       env:
         CI: true
       run: |
         pytest tests/ \
-          --browser=chrome \
+          --browser=chromium \
           --alluredir=allure-results \
           --tb=short \
           -v
