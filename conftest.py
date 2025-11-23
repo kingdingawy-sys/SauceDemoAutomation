@@ -4,6 +4,7 @@ import os
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options as ChromeOptions
+from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
@@ -13,7 +14,7 @@ def pytest_addoption(parser):
         "--browser",
         action="store",
         default="chrome",
-        help="Browser: chrome or firefox"
+        help="Browser: chrome, chromium, or firefox"
     )
 
 
@@ -48,38 +49,41 @@ def driver(request):
     else:
         options = ChromeOptions()
 
-        # Settings
+        # Basic settings
         options.add_argument("--disable-popup-blocking")
         options.add_argument("--disable-notifications")
         options.add_argument("--disable-infobars")
         options.add_argument("--disable-extensions")
         options.add_argument("--window-size=1920,1080")
 
-        # CI-only settings
+        # CI-only settings (Chromium)
         if is_ci:
             options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
 
-            # مهم جدًا — Chromium داخل GitHub Actions
+            # 🔥 Set Chromium binary location
             options.binary_location = "/usr/bin/chromium-browser"
 
-            driver = webdriver.Chrome(
-                options=options,
-                executable_path="/usr/lib/chromium-browser/chromedriver"
-            )
+            # 🔥 Use Service instead of executable_path
+            service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
+            driver = webdriver.Chrome(service=service, options=options)
 
         else:
-            # محلي (Chrome العادي)
+            # محلي (Chrome العادي - بدون service)
+            prefs = {
+                "credentials_enable_service": False,
+                "profile.password_manager_enabled": False
+            }
+            options.add_experimental_option("prefs", prefs)
+
             driver = webdriver.Chrome(options=options)
 
     # -----------------------------
     # Start the test
     # -----------------------------
     driver.get("https://www.saucedemo.com/")
-
-    # 🔥 انتظار بسيط يمنع مشاكل التنقّل في بعض التيستات
     time.sleep(0.7)
 
     yield driver
