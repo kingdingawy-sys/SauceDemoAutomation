@@ -26,7 +26,7 @@ class TestCheckoutEdgeCases:
         cart.wait_for_cart_to_load()
         cart.click_checkout()
 
-    # 🔥 Test 1: Very Long Names
+    #  Test 1: Very Long Names
     def test_checkout_with_very_long_names(self, driver):
         """
         Test checkout with extremely long names (100+ characters)
@@ -43,17 +43,17 @@ class TestCheckoutEdgeCases:
 
         # Check if it accepts or rejects
         if "checkout-step-two" in driver.current_url:
-            print("⚠️ Site accepts very long names (150 chars)")
+            print(" Site accepts very long names (150 chars)")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
-            print("✅ Checkout completed with very long names")
+            print(" Checkout completed with very long names")
         else:
             # Should show error
             error = driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
             assert error.is_displayed()
-            print("✅ Site properly rejects very long names")
+            print(" Site properly rejects very long names")
 
-    # 🔥 Test 2: Whitespace-Only Fields
+    #  Test 2: Whitespace-Only Fields
     def test_checkout_with_whitespace_only(self, driver):
         """
         Test checkout with fields containing only spaces
@@ -70,11 +70,11 @@ class TestCheckoutEdgeCases:
         if "checkout-step-one" in driver.current_url:
             error = driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
             assert error.is_displayed()
-            print("✅ Whitespace-only input properly rejected")
+            print(" Whitespace-only input properly rejected")
         else:
-            print("⚠️ Site accepts whitespace-only input")
+            print(" Site accepts whitespace-only input")
 
-    # 🔥 Test 3: Leading/Trailing Spaces
+    #  Test 3: Leading/Trailing Spaces
     def test_checkout_with_leading_trailing_spaces(self, driver):
         """
         Test if the system trims leading/trailing spaces
@@ -90,9 +90,9 @@ class TestCheckoutEdgeCases:
         checkout.click_finish()
         assert checkout.is_checkout_complete()
 
-        print("✅ Checkout handles leading/trailing spaces correctly")
+        print(" Checkout handles leading/trailing spaces correctly")
 
-    # 🔥 Test 4: Numbers in Name Fields
+    #  Test 4: Numbers in Name Fields
     def test_checkout_with_numbers_in_names(self, driver):
         """
         Test if numbers are allowed in name fields
@@ -105,15 +105,15 @@ class TestCheckoutEdgeCases:
         checkout.click_continue()
 
         if "checkout-step-two" in driver.current_url:
-            print("⚠️ Site accepts numbers in names")
+            print("️ Site accepts numbers in names")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
         else:
             error = driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
             assert error.is_displayed()
-            print("✅ Site rejects numbers in names")
+            print(" Site rejects numbers in names")
 
-    # 🔥 Test 5: Mixed Languages (Unicode)
+    #  Test 5: Mixed Languages (Unicode)
     def test_checkout_with_unicode_characters(self, driver):
         """
         Test checkout with Arabic/Unicode characters
@@ -126,13 +126,13 @@ class TestCheckoutEdgeCases:
         checkout.click_continue()
 
         if "checkout-step-two" in driver.current_url:
-            print("✅ Site supports Unicode/Arabic characters")
+            print(" Site supports Unicode/Arabic characters")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
         else:
-            print("⚠️ Site doesn't support Unicode characters")
+            print("️ Site doesn't support Unicode characters")
 
-    # 🔥 Test 6: Alphanumeric Postal Code
+    #  Test 6: Alphanumeric Postal Code
     def test_checkout_with_alphanumeric_postal_code(self, driver):
         """
         Test postal code with letters (like UK postcodes: SW1A 1AA)
@@ -145,13 +145,13 @@ class TestCheckoutEdgeCases:
         checkout.click_continue()
 
         if "checkout-step-two" in driver.current_url:
-            print("✅ Site accepts alphanumeric postal codes")
+            print(" Site accepts alphanumeric postal codes")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
         else:
-            print("⚠️ Site only accepts numeric postal codes")
+            print(" Site only accepts numeric postal codes")
 
-    # 🔥 Test 7: Negative/Zero Postal Code
+    #  Test 7: Negative/Zero Postal Code
     def test_checkout_with_negative_postal_code(self, driver):
         """
         Test postal code with negative number
@@ -164,13 +164,13 @@ class TestCheckoutEdgeCases:
         checkout.click_continue()
 
         if "checkout-step-two" in driver.current_url:
-            print("⚠️ Site accepts negative postal code")
+            print(" Site accepts negative postal code")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
         else:
-            print("✅ Site rejects negative postal code")
+            print(" Site rejects negative postal code")
 
-    # 🔥 Test 8: XSS Attempt in Fields
+    #  Test 8: XSS Attempt in Fields
     def test_checkout_with_xss_payload(self, driver):
         """
         Test if site is vulnerable to XSS attacks
@@ -192,17 +192,17 @@ class TestCheckoutEdgeCases:
                 page_source = driver.page_source
 
                 if "<script>" in page_source:
-                    print("🚨 SECURITY RISK: XSS payload not escaped!")
+                    print(" SECURITY RISK: XSS payload not escaped!")
                 else:
-                    print("✅ XSS payload properly escaped")
+                    print(" XSS payload properly escaped")
 
                 checkout.click_finish()
                 assert checkout.is_checkout_complete()
         except UnexpectedAlertPresentException:
-            print("🚨 CRITICAL: XSS executed! Alert appeared!")
+            print(" CRITICAL: XSS executed! Alert appeared!")
             driver.switch_to.alert.accept()
 
-    # 🔥 Test 9: SQL Injection Attempt
+    #  Test 9: SQL Injection Attempt
     def test_checkout_with_sql_injection(self, driver):
         """
         Test SQL injection in input fields
@@ -217,13 +217,13 @@ class TestCheckoutEdgeCases:
 
         # If it proceeds normally, the input was sanitized
         if "checkout-step-two" in driver.current_url:
-            print("✅ SQL injection payload handled safely")
+            print(" SQL injection payload handled safely")
             checkout.click_finish()
             assert checkout.is_checkout_complete()
         else:
-            print("⚠️ Unexpected behavior with SQL payload")
+            print(" Unexpected behavior with SQL payload")
 
-    # 🔥 Test 10: Repeated Rapid Clicks on Continue
+    #  Test 10: Repeated Rapid Clicks on Continue
     def test_rapid_clicks_on_continue_button(self, driver):
         """
         Test double-submit prevention
@@ -245,9 +245,9 @@ class TestCheckoutEdgeCases:
         assert "checkout-step-two" in driver.current_url
 
         # Verify no duplicate orders or errors
-        print("✅ Rapid clicks handled correctly (no double-submit)")
+        print(" Rapid clicks handled correctly (no double-submit)")
 
-    # 🔥 Test 11: Back Button During Checkout
+    #  Test 11: Back Button During Checkout
     def test_browser_back_button_during_checkout(self, driver):
         """
         Test behavior when using browser back button
@@ -270,11 +270,11 @@ class TestCheckoutEdgeCases:
         first_name_value = driver.find_element(By.ID, "first-name").get_attribute("value")
 
         if first_name_value == "Ibrahim":
-            print("✅ Form data preserved after back button")
+            print(" Form data preserved after back button")
         else:
-            print("⚠️ Form data cleared after back button")
+            print(" Form data cleared after back button")
 
-    # 🔥 Test 12: Direct URL Access to Step Two
+    #  Test 12: Direct URL Access to Step Two
     def test_direct_access_to_step_two(self, driver):
         """
         Test if user can skip step-one by directly accessing step-two URL
@@ -292,16 +292,13 @@ class TestCheckoutEdgeCases:
         import time
         time.sleep(1)
 
-        # Should either:
-        # 1. Redirect back to step-one or cart
-        # 2. Show error
-        # 3. Stay on step-two but with issues
+
 
         current_url = driver.current_url
 
         if "checkout-step-two" in current_url:
-            print("⚠️ Direct access to step-two allowed (potential security issue)")
+            print(" Direct access to step-two allowed (potential security issue)")
         elif "checkout-step-one" in current_url:
-            print("✅ Redirected to step-one (proper flow enforcement)")
+            print(" Redirected to step-one (proper flow enforcement)")
         elif "cart" in current_url or "inventory" in current_url:
-            print("✅ Redirected to safe page (proper access control)")
+            print(" Redirected to safe page (proper access control)")

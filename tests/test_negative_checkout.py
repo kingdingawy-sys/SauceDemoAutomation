@@ -30,7 +30,7 @@ class TestNegativeCheckout:
         cart.wait_for_cart_to_load()
         cart.click_checkout()
 
-    # ❌ Test 1: Empty First Name
+    #  Test 1: Empty First Name
     def test_checkout_without_first_name(self, driver):
         """
         Test checkout fails when first name is missing
@@ -45,17 +45,17 @@ class TestNegativeCheckout:
 
         checkout.click_continue()
 
-        # ✅ Verify error message appears
+        #  Verify error message appears
         error = driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
         assert error.is_displayed(), "Error message not displayed!"
         assert "First Name is required" in error.text or "Error" in error.text
 
-        # ✅ Verify still on step-one
+        #  Verify still on step-one
         assert "checkout-step-one" in driver.current_url
 
-        print("✅ Test passed: Checkout blocked without first name")
+        print(" Test passed: Checkout blocked without first name")
 
-    # ❌ Test 2: Empty Last Name
+    #  Test 2: Empty Last Name
     def test_checkout_without_last_name(self, driver):
         """
         Test checkout fails when last name is missing
@@ -76,9 +76,9 @@ class TestNegativeCheckout:
 
         assert "checkout-step-one" in driver.current_url
 
-        print("✅ Test passed: Checkout blocked without last name")
+        print(" Test passed: Checkout blocked without last name")
 
-    # ❌ Test 3: Empty Postal Code
+    #  Test 3: Empty Postal Code
     def test_checkout_without_postal_code(self, driver):
         """
         Test checkout fails when postal code is missing
@@ -99,9 +99,9 @@ class TestNegativeCheckout:
 
         assert "checkout-step-one" in driver.current_url
 
-        print("✅ Test passed: Checkout blocked without postal code")
+        print(" Test passed: Checkout blocked without postal code")
 
-    # ❌ Test 4: All Fields Empty
+    #  Test 4: All Fields Empty
     def test_checkout_with_all_fields_empty(self, driver):
         """
         Test checkout fails when all fields are empty
@@ -119,9 +119,9 @@ class TestNegativeCheckout:
 
         assert "checkout-step-one" in driver.current_url
 
-        print("✅ Test passed: Checkout blocked with all empty fields")
+        print(" Test passed: Checkout blocked with all empty fields")
 
-    # ❌ Test 5: Error Message Can Be Dismissed
+    #  Test 5: Error Message Can Be Dismissed
     def test_error_message_can_be_dismissed(self, driver):
         """
         Test that error message has close button and can be dismissed
@@ -145,9 +145,9 @@ class TestNegativeCheckout:
             driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
             assert False, "Error message still visible after closing"
         except NoSuchElementException:
-            print("✅ Test passed: Error message dismissed successfully")
+            print(" Test passed: Error message dismissed successfully")
 
-    # ❌ Test 6: Cancel Checkout
+    #  Test 6: Cancel Checkout
     def test_cancel_checkout_from_step_one(self, driver):
         """
         Test canceling checkout returns to cart
@@ -161,9 +161,9 @@ class TestNegativeCheckout:
         # Should return to cart
         assert "cart" in driver.current_url
 
-        print("✅ Test passed: Cancel returns to cart")
+        print(" Test passed: Cancel returns to cart")
 
-    # ❌ Test 7: Cancel from Step Two
+    #  Test 7: Cancel from Step Two
     def test_cancel_checkout_from_step_two(self, driver):
         """
         Test canceling from overview page returns to products
@@ -181,10 +181,10 @@ class TestNegativeCheckout:
         # Should return to products page
         assert "inventory" in driver.current_url
 
-        print("✅ Test passed: Cancel from step-two returns to inventory")
+        print(" Test passed: Cancel from step-two returns to inventory")
 
 
-# ❌ Separate test for empty cart (can't use the same setup)
+#  Separate test for empty cart (can't use the same setup)
 @pytest.mark.parametrize("driver", ["firefox"], indirect=True)
 def test_checkout_with_empty_cart(driver):
     """
@@ -200,10 +200,7 @@ def test_checkout_with_empty_cart(driver):
     # Go directly to cart without adding products
     products.go_to_cart()
 
-    # Verify checkout button behavior
-    # Option 1: Button doesn't exist
-    # Option 2: Button exists but is disabled
-    # Option 3: Clicking shows error
+
 
     from selenium.common.exceptions import NoSuchElementException
 
@@ -217,15 +214,15 @@ def test_checkout_with_empty_cart(driver):
             # Click and see what happens
             checkout_btn.click()
             # Some sites allow this but show error later
-            print("⚠️ Checkout button clickable with empty cart")
+            print(" Checkout button clickable with empty cart")
         else:
-            print("✅ Test passed: Checkout button disabled with empty cart")
+            print(" Test passed: Checkout button disabled with empty cart")
 
     except NoSuchElementException:
-        print("✅ Test passed: Checkout button not present with empty cart")
+        print(" Test passed: Checkout button not present with empty cart")
 
 
-# ❌ Test 8: Special Characters in Fields
+#  Test 8: Special Characters in Fields
 @pytest.mark.parametrize("driver", ["firefox"], indirect=True)
 def test_checkout_with_special_characters(driver):
     """
@@ -252,13 +249,13 @@ def test_checkout_with_special_characters(driver):
     # Check if it proceeds or shows error
     # This depends on site's validation rules
     if "checkout-step-two" in driver.current_url:
-        print("⚠️ Site accepts special characters in names")
+        print(" Site accepts special characters in names")
         # Continue to verify checkout still works
         checkout.click_finish()
         assert checkout.is_checkout_complete()
-        print("✅ Checkout completed with special characters")
+        print(" Checkout completed with special characters")
     else:
         # Error should appear
         error = driver.find_element(By.CSS_SELECTOR, "[data-test='error']")
         assert error.is_displayed()
-        print("✅ Site blocks special characters appropriately")
+        print(" Site blocks special characters appropriately")

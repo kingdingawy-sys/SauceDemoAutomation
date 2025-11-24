@@ -1,3 +1,0 @@
-
-🚀 Starting FIREFOX browser (CI: False)
-✅ Test passed: Cancel returns to cart

@@ -1,3 +1,0 @@
-
-🚀 Starting FIREFOX browser (CI: False)
-⚠️ Checkout button clickable with empty cart

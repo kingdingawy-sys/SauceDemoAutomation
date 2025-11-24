@@ -20,27 +20,20 @@ class ProductsPage:
         return len(self.driver.find_elements(*self.products_list))
 
     def toggle_product_in_cart(self, index=0, expected_text="Remove", timeout=5):
-        """
-        تضغط على زرار المنتج حسب index وتنتظر لغاية ما النص يتغير للنص المطلوب.
-        expected_text: النص اللي عايز تتأكد إنه ظهر بعد الضغط ('Remove' أو 'Add to cart')
-        """
         WebDriverWait(self.driver, timeout).until(
             EC.presence_of_all_elements_located(self.add_buttons)
         )
         buttons = self.driver.find_elements(*self.add_buttons)
         button = buttons[index]
 
-        # اضغط بس لو النص الحالي مختلف عن النص المطلوب
         if button.text.strip().lower() != expected_text.lower():
             button.click()
 
-        # انتظر لغاية ما النص يتغير للنص المطلوب
         WebDriverWait(self.driver, timeout).until(
             lambda d: d.find_elements(*self.add_buttons)[index].text.strip().lower() == expected_text.lower()
         )
         return self.driver.find_elements(*self.add_buttons)[index].text
 
-    # Wrappers علشان التيستات القديمة تشتغل بدون أي تعديل
     def add_product_to_cart(self, index=0, timeout=5):
         return self.toggle_product_in_cart(index=index, expected_text="Remove", timeout=timeout)
 
@@ -55,7 +48,6 @@ class ProductsPage:
             return 0
 
     def go_to_cart(self, timeout=10):
-        # نضغط على أيقونة السلة للانتقال للـ cart page
         WebDriverWait(self.driver, timeout).until(
             EC.element_to_be_clickable(self.cart_icon)
         ).click()
@@ -65,7 +57,6 @@ class ProductsPage:
             EC.presence_of_all_elements_located(self.products_list)
         )
         items = self.driver.find_elements(*self.products_list)
-        # اسم العنصر هو العنصر الذي يحتوي class inventory_item_name
         items[index].find_element(By.CLASS_NAME, "inventory_item_name").click()
 
     def sort_products(self, sort_option_text):

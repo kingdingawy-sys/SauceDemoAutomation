@@ -27,11 +27,11 @@ def test_login_behavior(driver, username, password, expected_behavior):
         assert "locked out" in error_message.lower(), f"Expected locked out error, got: {error_message}"
 
     elif expected_behavior == "User sees broken images":
-        # 🔥 Skip broken images check in CI/CD (headless mode)
+        #  Skip broken images check in CI/CD (headless mode)
         if is_ci:
             # Just verify login succeeded
             assert "inventory" in driver.current_url, "Problem user should login successfully"
-            print("⚠️ Skipping broken images check in CI/CD (headless mode)")
+            print(" Skipping broken images check in CI/CD (headless mode)")
         else:
             # Check broken images locally
             assert "inventory" in driver.current_url

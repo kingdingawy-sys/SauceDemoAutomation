@@ -30,7 +30,6 @@ def test_add_remove_product(driver):
     assert button_text == "Add to cart"
 
 
-# 🔥 موجود: Sort by Price Low → High
 def test_sort_by_price_low_to_high(driver):
     products = login_and_get_products(driver)
 
@@ -44,7 +43,6 @@ def test_sort_by_price_low_to_high(driver):
     assert prices == sorted(prices)
 
 
-# 🔥 جديد: Sort by Price High → Low
 def test_sort_by_price_high_to_low(driver):
     products = login_and_get_products(driver)
 
@@ -58,7 +56,6 @@ def test_sort_by_price_high_to_low(driver):
     assert prices == sorted(prices, reverse=True)
 
 
-# 🔥 جديد: Sort by Name A → Z
 def test_sort_by_name_az(driver):
     products = login_and_get_products(driver)
 
@@ -72,7 +69,6 @@ def test_sort_by_name_az(driver):
     assert names == sorted(names)
 
 
-# 🔥 جديد: Sort by Name Z → A
 def test_sort_by_name_za(driver):
     products = login_and_get_products(driver)
 

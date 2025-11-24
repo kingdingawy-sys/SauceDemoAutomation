@@ -3,10 +3,6 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
 
 def accept_alert_if_present(driver, timeout=3):
-    """
-    يقبل الـ Chrome alert لو موجود.
-    لو مش موجود، يكمل عادي.
-    """
     try:
         WebDriverWait(driver, timeout).until(EC.alert_is_present())
         alert = driver.switch_to.alert

@@ -1,3 +1,0 @@
-
-🚀 Starting FIREFOX browser (CI: False)
-✅ Test passed: Checkout blocked without first name

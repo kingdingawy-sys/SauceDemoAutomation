@@ -9,7 +9,6 @@ from selenium.webdriver.firefox.options import Options as FirefoxOptions
 
 
 def pytest_addoption(parser):
-    """إضافة browser option"""
     parser.addoption(
         "--browser",
         action="store",
@@ -20,19 +19,11 @@ def pytest_addoption(parser):
 
 @pytest.fixture
 def driver(request):
-    """
-    Driver fixture - يعمل محليًا وفي GitHub Actions
-    """
-    # اختار المتصفح
     browser = getattr(request, "param", request.config.getoption("--browser"))
 
-    # هل احنا داخل GitHub Actions؟
     is_ci = bool(os.getenv("CI") or os.getenv("GITHUB_ACTIONS"))
-    print(f"\n🚀 Starting {browser.upper()} browser (CI: {is_ci})")
+    print(f"\n Starting {browser.upper()} browser (CI: {is_ci})")
 
-    # -----------------------------
-    # Firefox
-    # -----------------------------
     if browser.lower() == "firefox":
         options = FirefoxOptions()
         options.set_preference("dom.disable_beforeunload", True)
@@ -43,9 +34,6 @@ def driver(request):
 
         driver = webdriver.Firefox(options=options)
 
-    # -----------------------------
-    # Chrome / Chromium
-    # -----------------------------
     else:
         options = ChromeOptions()
 
@@ -63,15 +51,14 @@ def driver(request):
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
 
-            # 🔥 Set Chromium binary location
+            #  Set Chromium binary location
             options.binary_location = "/usr/bin/chromium-browser"
 
-            # 🔥 Use Service instead of executable_path
+            #  Use Service instead of executable_path
             service = ChromeService(executable_path="/usr/lib/chromium-browser/chromedriver")
             driver = webdriver.Chrome(service=service, options=options)
 
         else:
-            # محلي (Chrome العادي - بدون service)
             prefs = {
                 "credentials_enable_service": False,
                 "profile.password_manager_enabled": False
@@ -80,9 +67,6 @@ def driver(request):
 
             driver = webdriver.Chrome(options=options)
 
-    # -----------------------------
-    # Start the test
-    # -----------------------------
     driver.get("https://www.saucedemo.com/")
     time.sleep(0.7)
 
@@ -90,9 +74,7 @@ def driver(request):
     driver.quit()
 
 
-# ---------------------------------
 # Screenshot on failure
-# ---------------------------------
 @pytest.hookimpl(tryfirst=True, hookwrapper=True)
 def pytest_runtest_makereport(item, call):
     """Screenshot on failure"""

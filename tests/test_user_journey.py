@@ -9,21 +9,18 @@ from pages.checkout_page import CheckoutPage
 
 @pytest.mark.parametrize("driver", ["firefox"], indirect=True)
 def test_complete_user_journey_firefox(driver):
-    """
-    اختبار تجربة مستخدم كاملة على Firefox (مافيش alerts)
-    """
     # 1. Login
     login_page = LoginPage(driver)
     login_page.login("standard_user", "secret_sauce")
     assert login_page.is_logged_in() == True
 
-    # 2. Go to products (نستخدم driver.get مباشرة)
-    driver.get("https://www.saucedemo.com/inventory.html")  # ← رابط صفحة المنتجات
+    # 2. Go to products
+    driver.get("https://www.saucedemo.com/inventory.html")
 
     # 3. Add product to cart
     products_page = ProductsPage(driver)
-    products_page.add_product_to_cart(0)  # ← نضيف المنتج
-    products_page.go_to_cart()            # ← نروح السلة
+    products_page.add_product_to_cart(0)
+    products_page.go_to_cart()
 
     # 4. In cart, click checkout
     cart_page = CartPage(driver)
@@ -38,7 +35,7 @@ def test_complete_user_journey_firefox(driver):
     # 6. Finish checkout
     checkout_page.click_finish()
 
-    # 7. Handle alert if present (Firefox مافيش عنده alerts)
+    # 7. Handle alert if present
     try:
         WebDriverWait(driver, 5).until(EC.alert_is_present())
         alert = driver.switch_to.alert
