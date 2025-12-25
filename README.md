@@ -216,7 +216,7 @@ Automated testing runs on every push/pull request via **GitHub Actions**.
 
 ### View Workflow:
 - **File:** `.github/workflows/tests.yml`
-- **Status:** https://github.com/kingdingawy-sys/SauceDemoAutomation/actions/workflows/tests.yml/badge.svg
+- **Status:** https://github.com/ibrahim-dingawy/SauceDemoAutomation/actions/workflows/tests.yml/badge.svg
 ---
 
 ## 📈 Reports
@@ -338,7 +338,7 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 Ibrahim Ahmed 
 - 💼 LinkedIn: [Ibrahim A. Mohamed](https://www.linkedin.com/in/ibrahim-dingawy)
 - 🐙 GitHub: [@kingdingawy-sys](https://github.com/kingdingawy-sys)
-- 📧 Email: [kingdingawy@gmail.com](mailto:kingdingawy@gmail.com)
+- 📧 Email: [ibrahim.softtest.qa@proton.me](mailto:ibrahim.softtest.qa@proton.me)
 
 ---
 
@@ -362,12 +362,5 @@ Ibrahim Ahmed
 
 ---
 
-## 🔗 Quick Links
-
-- [GitHub Repository](https://github.com/kingdingawy-sys/SauceDemoAutomation)
-- [CI/CD Pipeline](https://github.com/kingdingawy-sys/SauceDemoAutomation/actions)
-- [Issue Tracker](https://github.com/kingdingawy-sys/SauceDemoAutomation/issues)
-
----
 
 ⭐ **If you find this project useful, please give it a star!**
